@@ -65,7 +65,8 @@
                         list($stockId, $year, $month) = explode('-', $key);
                         $stockName = $data->first()->stock->codigo;
                         $stockLogo = $data->first()->stock->logo_url;
-                        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                        $date = new DateTime("$year-$month-01");
+                        $daysInMonth = $date->format('t');
                     @endphp
                     <tr>
                         <td style="position: sticky; left: 0; background-color: white; z-index: 1;">
