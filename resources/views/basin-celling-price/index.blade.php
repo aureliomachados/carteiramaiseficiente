@@ -267,29 +267,31 @@
         }
 
         // Function to fetch and render data
-        function fetchDataAndRender(returnRate) {
-            progressCircleContainer.show();
-            dividendData.hide();
-            quarantineData.hide();
+    function fetchDataAndRender(returnRate) {
+        progressCircleContainer.show();
+        dividendData.hide();
+        quarantineData.hide();
 
-            $.when(fetchStockPrices(), fetchDividendYields(), fetchHistoricalIndicators())
-                .done((stockData, dividendReturnedData, historicalIndicatorsData) => {
-                    processStockData(stockData[0], dividendReturnedData[0], historicalIndicatorsData[0], returnRate);
-                })
-                .fail(error => {
-                    console.error('Erro ao consumir as APIs:', error);
-                });
-        }
+        // Ensure that each fetch function returns a promise
+        $.when(fetchStockPrices(), fetchDividendYields(), fetchHistoricalIndicators())
+            .done((stockData, dividendReturnedData, historicalIndicatorsData) => {
+                processStockData(stockData[0], dividendReturnedData[0], historicalIndicatorsData[0], returnRate);
+            })
+            .fail(error => {
+                console.error('Erro ao consumir as APIs:', error);
+                progressCircleContainer.hide(); // Hide the loader in case of error
+            });
+    }
 
-        // Initial render with default return rate
-        fetchDataAndRender(6);
+    // Initial render with default return rate
+    fetchDataAndRender(6);
 
-        // Handle form submission
-        $('#return-rate-form').on('submit', function(event) {
-            event.preventDefault();
-            const returnRate = parseFloat($('#return-rate').val());
-            fetchDataAndRender(returnRate);
-        });
+    // Handle form submission
+    $('#return-rate-form').on('submit', function(event) {
+        event.preventDefault();
+        const returnRate = parseFloat($('#return-rate').val());
+        fetchDataAndRender(returnRate);
+    });
     });
 </script>
 @endsection
